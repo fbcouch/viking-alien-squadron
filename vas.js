@@ -34,6 +34,7 @@ function init() {
     console.log("game init");
     
     canvas = document.getElementById("gameCanvas");
+    canvas.style.background = "#93f";
     stage = new createjs.Stage(canvas);
     
     canvasWidth = canvas.width;
@@ -75,6 +76,8 @@ function tick(event) {
     	playerFacingRight = true;
     	player.x += playerMoveSpeed * delta;
     	if (player.paused) player.gotoAndPlay("walk");
+	} else if (jumpDown) {
+		if (player.paused) player.gotoAndStop((playerFacingRight ? "jump" : "jump_h"));
     } else {
     	player.gotoAndStop((playerFacingRight ? "walk" : "walk_h"));
     }
@@ -86,17 +89,15 @@ function tick(event) {
 
 function restart() {
 	playerWalkSheet = new createjs.SpriteSheet({
-		images: [preload.getResult("player-walk-anim")],
+		images: [preload.getResult("player-walk-anim"), preload.getResult("player-jump")],
 		frames: {width: 72, height: 97, regX: 36, regY: 0},
 		animations: {
 			walk: [0, 10],
+			jump: 15,
 		},
 	});
 	createjs.SpriteSheetUtils.addFlippedFrames(playerWalkSheet, true, false, false);
-	player = new createjs.BitmapAnimation(playerWalkSheet);
-	
-	player.width = 72;
-	player.height = 97;
+	player = new Player(playerWalkSheet);
 	
 	player.x = (canvasWidth / 2);
 	player.y = (canvasHeight - player.height);
