@@ -66,7 +66,6 @@ Level.prototype.initialize = function () {
 	this.layers.push(this.objlayer);
 	
 	this.player = new Player(preload);
-	this.objlayer.addChild(this.player);
 	this.addObject(this.player);
 	
 	this.player.x = this.player.width;
@@ -75,7 +74,6 @@ Level.prototype.initialize = function () {
 	for (var x = 0; x < this.width; x += BLOCK_SIZE) {
 		var testblock = new Block(preload.getResult("ground"));
 		
-		this.objlayer.addChild(testblock);
 		testblock.x = x;
 		testblock.y = this.height - testblock.height;
 		
@@ -88,8 +86,15 @@ Level.prototype.initialize = function () {
 	
 	// add a test enemy
 	var test = new Enemy(ENEMY_SLIME);
-	this.objlayer.addChild(test);
 	this.addObject(test);
+	test.x = BLOCK_SIZE * 10;
+	test.y = this.height - BLOCK_SIZE * 3;
+	
+	// add a test coin
+	test = new Coin();
+	this.addObject(test);
+	test.x = BLOCK_SIZE * 8;
+	test.y = BLOCK_SIZE * 7;
 }
 
 Level.prototype.tick = function tick(delta) {
@@ -99,10 +104,12 @@ Level.prototype.tick = function tick(delta) {
 		
 		if (obj.update) obj.update(delta);
 		
-		obj.vY += this.gravity * delta;
-		if (obj.vY > TERMINAL_VEL) obj.vY = TERMINAL_VEL;
-		obj.y += obj.vY * delta;
+		if (!obj.nogravity) 
+			obj.vY += this.gravity * delta;
 		
+		if (obj.vY > TERMINAL_VEL) obj.vY = TERMINAL_VEL;
+		
+		obj.y += obj.vY * delta;
 		
 		if (obj.y + obj.height > this.height) {
 			obj.y = this.height - obj.height;
@@ -110,17 +117,39 @@ Level.prototype.tick = function tick(delta) {
 			if (obj.collideGround) obj.collideGround();
 		} 
 		
-		if (obj.x < 0) obj.x = 0;
+		if (obj instanceof Enemy) console.log(obj.vX);
+		obj.x += obj.vX * delta;
+		
+		if (obj.x < 0) {
+			obj.x = 0;
+			if (obj.collideSide) obj.collideSide();
+		}
 		if (obj.x + obj.width > this.width) {
 			if (obj == this.player) {
 				if (obj.x + obj.width * 0.5 > this.width)
 					this.completed = true;
 			} else obj.x = this.width - obj.width;
+			if (obj.collideSide) obj.collideSide();
 		}
+		
+		// collision detection
 		for (var j=i+1; j<this.objects.length; j++) {
 			var other = this.objects[j];
-			console.log("collide test");
+			
 			if (this.collideRect(obj, other)) {
+				// if either object is not allowed to collide, don't collide
+				if ((obj.canCollide && !obj.canCollide(other)) ||
+					(other.canCollide && !other.canCollide(obj))) {
+					continue;
+				}
+				
+				// if either object returns false from collide, don't continue the collision
+				var obj_result = obj.collide && !obj.collide(other);
+				var other_result = other.collide && !other.collide(obj);
+				if (obj_result || other_result) {
+					continue;
+				}
+				
 				var move, nomove;
 				if (obj === this.player) { 
 					move = obj;
@@ -131,11 +160,11 @@ Level.prototype.tick = function tick(delta) {
 				} else if (obj instanceof Block && !(other instanceof Block)) {
 					move = other;
 					nomove = obj;
-					console.log("collide1");
+					
 				} else if (other instanceof Block && !(obj instanceof Block)) {
 					move = obj;
 					nomove = other;
-					console.log("collide2");
+					
 				}
 				
 				if (move && nomove) {
@@ -155,18 +184,30 @@ Level.prototype.tick = function tick(delta) {
 					
 					if (Math.abs(dy) <= Math.abs(dx) || (dy < 0 && dy > -5)) {
 						move.y += dy;
-						console.log("dy: " + (dx).toString());
+						
 						move.vY = 0;
 						
 						if (move.collideGround) move.collideGround();
 					} else {
-						console.log("dx");
 						move.x += dx;
+						
+						move.vX = 0;
+						
+						if (move.collideSide) move.collideSide();
+						if (nomove.collideSide) nomove.collideSide();
 					}
 				}
 			} 
 		}
-		
+	}
+	
+	// remove things that need removing
+	for (var i=0; i<this.objects.length; i++) {
+		if (this.objects[i].isRemove) {
+			this.objlayer.removeChild(this.objects[i]);
+			this.objects.splice(i, 1);
+			i--;
+		}
 	}
 	
 	// update backgrounds
@@ -193,6 +234,7 @@ Level.prototype.collideRect = function (obj1, obj2) {
 
 Level.prototype.addObject = function addObject(obj) {
 	this.objects.push(obj);
+	if (this.objlayer) this.objlayer.addChild(obj);
 	if (!obj.vX) obj.vX = 0;
 	if (!obj.vY) obj.vY = 0;
 }

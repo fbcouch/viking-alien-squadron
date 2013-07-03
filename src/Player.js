@@ -31,6 +31,7 @@ Player.prototype.initialize = function (playerSpriteSheet) {
 	this.facingRight = true;
 	
 	this.isJumping = true;
+	this.coins = 0;
 	
 	this.gotoAndStop((this.facingRight ? "walk" : "walk_h"));
 }

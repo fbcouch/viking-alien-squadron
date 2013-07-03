@@ -15,4 +15,6 @@ Block.prototype.initialize = function (image) {
 	
 	this.height = this.image.height;
 	this.width = this.image.width;
+	
+	this.nogravity = true;
 }

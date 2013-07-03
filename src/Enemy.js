@@ -45,20 +45,36 @@ Enemy.prototype.initialize = function (spriteSheet, type) {
 	this.isDead = false;
 	this.facingRight = false;
 	
+	this.moveSpeed = 100;
+	
 	this.gotoAndPlay((this.facingRight ? "move_h" : "move"));
 }
 
 Enemy.prototype.update = function (delta) {
-	
 	// behavior
 	switch (this.type) {
 		case ENEMY_SLIME:
+			this.vX = this.moveSpeed * (this.facingRight ? 1 : -1);
 		break;
 		case ENEMY_FLY:
 		break;
 	}
 	
+	if (this.animation !== (this.facingRight ? "move_h" : "move"))
+		this.gotoAndPlay((this.facingRight ? "move_h" : "move"));
+	
 	if (this.isDead) {
 		this.gotoAndStop("dead");
+	}
+}
+
+Enemy.prototype.collideSide = function () {
+	switch (this.type) {
+		case ENEMY_SLIME:
+			this.facingRight = !this.facingRight;
+			break;
+		case ENEMY_FLY:
+		default:
+			break;
 	}
 }
