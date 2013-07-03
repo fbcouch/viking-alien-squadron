@@ -13,9 +13,13 @@ var stage;
 var canvasWidth;
 var canvasHeight;
 
+// gamestate
+
 var player, playerFacingRight = true;
 var playerMoveSpeed = 100;
 var playerWalkSheet, playerWalkAnim;
+
+var currentLevel;
 
 // input
 var leftDown = false, rightDown = false, jumpDown = false;
@@ -88,16 +92,10 @@ function tick(event) {
 }
 
 function restart() {
-	playerWalkSheet = new createjs.SpriteSheet({
-		images: [preload.getResult("player-walk-anim"), preload.getResult("player-jump")],
-		frames: {width: 72, height: 97, regX: 36, regY: 0},
-		animations: {
-			walk: [0, 10],
-			jump: 15,
-		},
-	});
-	createjs.SpriteSheetUtils.addFlippedFrames(playerWalkSheet, true, false, false);
-	player = new Player(playerWalkSheet);
+	
+	currentLevel = new Level();
+	
+	player = currentLevel.player;
 	
 	player.x = (canvasWidth / 2);
 	player.y = (canvasHeight - player.height);
@@ -109,7 +107,7 @@ function restart() {
 	jumpDown = leftDown = rightDown = false;
 	
 	stage.clear();
-	stage.addChild(player);
+	stage.addChild(currentLevel);
 	
 	if (!createjs.Ticker.hasEventListener("tick")) {
 		createjs.Ticker.addEventListener("tick", tick);
@@ -179,7 +177,7 @@ function updateLoading() {
 }
 
 function doneLoading() {
-	scoreField = new createjs.Text("0", "bold 12px Arial", "#FFFFFF");
+	scoreField = new createjs.Text("0", "bold 30px sans-serif", "#FFFFFF");
 	scoreField.textAlign = "right";
 	scoreField.x = canvasWidth - 10;
 	scoreField.y = 22;

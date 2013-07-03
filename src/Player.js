@@ -1,6 +1,16 @@
 
 // constructor
-function Player(playerSpriteSheet) {
+function Player(preload) {
+	var playerSpriteSheet = new createjs.SpriteSheet({
+		images: [preload.getResult("player-walk-anim"), preload.getResult("player-jump")],
+		frames: {width: 72, height: 97, regX: 36, regY: 0},
+		animations: {
+			walk: [0, 10],
+			jump: 15,
+		},
+	});
+	createjs.SpriteSheetUtils.addFlippedFrames(playerSpriteSheet, true, false, false);
+	
 	this.initialize(playerSpriteSheet);
 }
 
