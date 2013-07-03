@@ -27,6 +27,9 @@ Level.prototype.initialize = function () {
 	
 	this.gravity = 1000;
 	
+	this.levelScore = 0;
+	this.maxprogress = 0;
+	
 	// generate background
 	var background = new createjs.Container();
 	background.width = this.width;
@@ -84,7 +87,7 @@ Level.prototype.initialize = function () {
 }
 
 Level.prototype.tick = function tick(delta) {
-	
+	// update objects
 	for (var i=0; i<this.objects.length; i++) {
 		var obj = this.objects[i];
 		
@@ -154,6 +157,10 @@ Level.prototype.tick = function tick(delta) {
 			else this.layers[i].x = (player.x - canvasWidth * 0.5) / (this.width - canvasWidth) * (this.width - this.layers[i].width);
 		}
 	}
+	
+	// update level score
+	if (this.player.x + this.player.width * 0.5 > this.maxprogress) this.maxprogress = this.player.x + this.player.width;
+	this.levelScore = this.maxprogress;
 }
 
 Level.prototype.collideRect = function (obj1, obj2) {

@@ -17,6 +17,7 @@ var canvasHeight;
 
 var player;
 var currentLevel;
+var baseScore;
 
 // input
 var leftDown = false, rightDown = false, jumpDown = false;
@@ -102,13 +103,19 @@ function tick(event) {
     if (currentLevel.x > 0) currentLevel.x = 0;
     if (currentLevel.x < -1 * (currentLevel.width - canvasWidth)) currentLevel.x = -1 * (currentLevel.width - canvasWidth);
     
-    if (currentLevel.completed) restart();
+    if (currentLevel.completed) {
+    	var score = baseScore + currentLevel.levelScore;
+    	restart();
+    	baseScore = score;
+    } 
+    
+    scoreField.text = (parseInt(baseScore + currentLevel.levelScore)).toString();
     
     stage.update();
 }
 
 function restart() {
-	
+	baseScore = 0;
 	currentLevel = new Level();
 	
 	player = currentLevel.player;
