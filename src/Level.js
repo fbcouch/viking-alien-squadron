@@ -5,6 +5,7 @@
 
 // Constructor
 function Level() {
+	this.initialize();
 	this.layers = new Array();
 	this.objects = new Array();
 	
@@ -23,6 +24,12 @@ function Level() {
 
 Level.prototype = new createjs.Container();
 
+Level.prototype.Container_initialize = Level.prototype.initialize;
+
+Level.prototype.initialize = function () {
+	this.Container_initialize();
+}
+
 Level.prototype.tick = function tick(delta) {
 	for (var i=0; i<this.objects.length; i++) {
 		var obj = this.objects[i];
@@ -38,6 +45,9 @@ Level.prototype.tick = function tick(delta) {
 			obj.y = this.height - obj.height;
 			obj.vY = 0;
 		} 
+		
+		if (obj.x < 0) obj.x = 0;
+		if (obj.x + obj.width > this.width) obj.x = this.width - obj.width;
 		
 	}
 }

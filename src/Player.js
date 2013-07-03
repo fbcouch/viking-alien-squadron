@@ -25,8 +25,24 @@ Player.prototype.initialize = function (playerSpriteSheet) {
 	
 	this.width = this.spriteSheet.getFrame(0).rect.width;
 	this.height = this.spriteSheet.getFrame(0).rect.height;
+	this.regX = -36;
+	this.regY = 0;
 }
 
 Player.prototype.update = function (delta) {
 	if (jumpDown && this.paused) this.vY = this.jumpVel;
+	
+	if (leftDown && !rightDown) {
+    	playerFacingRight = false;
+    	player.x -= playerMoveSpeed * delta;
+    	if (player.paused) player.gotoAndPlay("walk_h");
+    } else if (rightDown && !leftDown) {
+    	playerFacingRight = true;
+    	player.x += playerMoveSpeed * delta;
+    	if (player.paused) player.gotoAndPlay("walk");
+	} else if (jumpDown) {
+		if (player.paused) player.gotoAndStop((playerFacingRight ? "jump" : "jump_h"));
+    } else {
+    	player.gotoAndStop((playerFacingRight ? "walk" : "walk_h"));
+    }
 }

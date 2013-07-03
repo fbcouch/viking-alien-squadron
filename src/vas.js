@@ -74,20 +74,6 @@ function tick(event) {
     
     currentLevel.tick(delta);
     
-    if (leftDown && !rightDown) {
-    	playerFacingRight = false;
-    	player.x -= playerMoveSpeed * delta;
-    	if (player.paused) player.gotoAndPlay("walk_h");
-    } else if (rightDown && !leftDown) {
-    	playerFacingRight = true;
-    	player.x += playerMoveSpeed * delta;
-    	if (player.paused) player.gotoAndPlay("walk");
-	} else if (jumpDown) {
-		if (player.paused) player.gotoAndStop((playerFacingRight ? "jump" : "jump_h"));
-    } else {
-    	player.gotoAndStop((playerFacingRight ? "walk" : "walk_h"));
-    }
-    
     currentLevel.x = - player.x + canvasWidth * 0.5;
     // clamp view to level bounds
     if (currentLevel.x > 0) currentLevel.x = 0;
