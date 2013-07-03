@@ -55,6 +55,7 @@ function init() {
     	{id: "player-face-right", src: "assets/character/side.png"},
     	{id: "player-jump", src: "assets/character/jump.png"},
     	{id: "player-walk-anim", src: "assets/character/sheet/walk_sheet.png"},
+    	{id: "ground", src: "assets/ground.png"},
     ];
     
     preload = new createjs.LoadQueue();
