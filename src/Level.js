@@ -25,17 +25,37 @@ Level.prototype.initialize = function () {
 	
 	// generate background
 	var background = new createjs.Container();
-	background.width = this.width;
+	background.width = this.width * 0.9;
 	background.height = this.height;
 	this.layers.push(background);
 	
-	var y = this.height - BLOCK_SIZE;
+	var y = background.height - BLOCK_SIZE * 0.8;
 	var img;
-	for (var x = 0; x < this.width; x += 70 * Math.random() * 5) {
+	for (var x = 70 * Math.random() * 5; x < this.width; x += 70 + 70 * Math.random() * 5) {
 		img = new createjs.Bitmap(preload.getResult("hill-long"));
 		background.addChild(img);
 		img.x = x;
-		img.y = y;
+		img.y = y - img.image.height;
+	}
+	
+	for (var x = 70 * Math.random() * 5; x < this.width; x += 70 + 70 * Math.random() * 5) {
+		img = new createjs.Bitmap(preload.getResult("hill-short"));
+		background.addChild(img);
+		img.x = x;
+		img.y = y - img.image.height;
+	}
+	
+	background = new createjs.Container();
+	background.width = this.width * 0.7;
+	background.height = this.height;
+	this.layers.push(background);
+	
+	y = BLOCK_SIZE * 2;
+	for (var x = 70 * Math.random() * 5; x < background.width; x += 70 + 70 * Math.random() * 5) {
+		img = new createjs.Bitmap(preload.getResult("cloud-" + parseInt((Math.random() * 3 + 1).toString())));
+		background.addChild(img);
+		img.x = x;
+		img.y = y - img.image.height + Math.random() * BLOCK_SIZE;
 	}
 	
 	// object layer
@@ -69,6 +89,7 @@ Level.prototype.initialize = function () {
 }
 
 Level.prototype.tick = function tick(delta) {
+	
 	for (var i=0; i<this.objects.length; i++) {
 		var obj = this.objects[i];
 		
@@ -123,6 +144,16 @@ Level.prototype.tick = function tick(delta) {
 			} 
 		}
 		
+	}
+	
+	// update backgrounds
+	for (var i=0; i<this.layers.length; i++) {
+		if (this.layers[i].width !== this.width) {
+			// parallax!
+			if (player.x < canvasWidth * 0.5) this.layers[i].x = 0;
+			else if (player.x > this.width - canvasWidth * 0.5) this.layers[i].x = this.width - this.layers[i].width;
+			else this.layers[i].x = (player.x - canvasWidth * 0.5) / (this.width - canvasWidth) * (this.width - this.layers[i].width);
+		}
 	}
 }
 
