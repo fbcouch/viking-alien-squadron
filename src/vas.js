@@ -15,10 +15,7 @@ var canvasHeight;
 
 // gamestate
 
-var player, playerFacingRight = true;
-var playerMoveSpeed = 100;
-var playerWalkSheet, playerWalkAnim;
-
+var player;
 var currentLevel;
 
 // input

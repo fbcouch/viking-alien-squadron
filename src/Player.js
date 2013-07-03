@@ -11,8 +11,6 @@ function Player(preload) {
 	});
 	createjs.SpriteSheetUtils.addFlippedFrames(playerSpriteSheet, true, false, false);
 	
-	this.jumpVel = -300;
-	
 	this.initialize(playerSpriteSheet);
 }
 
@@ -27,22 +25,26 @@ Player.prototype.initialize = function (playerSpriteSheet) {
 	this.height = this.spriteSheet.getFrame(0).rect.height;
 	this.regX = -36;
 	this.regY = 0;
+	
+	this.jumpVel = -300;
+	this.moveSpeed = 100;
+	this.facingRight = true;
 }
 
 Player.prototype.update = function (delta) {
 	if (jumpDown && this.paused) this.vY = this.jumpVel;
 	
 	if (leftDown && !rightDown) {
-    	playerFacingRight = false;
-    	player.x -= playerMoveSpeed * delta;
+    	this.facingRight = false;
+    	player.x -= this.moveSpeed * delta;
     	if (player.paused) player.gotoAndPlay("walk_h");
     } else if (rightDown && !leftDown) {
-    	playerFacingRight = true;
-    	player.x += playerMoveSpeed * delta;
+    	this.facingRight = true;
+    	player.x += this.moveSpeed * delta;
     	if (player.paused) player.gotoAndPlay("walk");
 	} else if (jumpDown) {
-		if (player.paused) player.gotoAndStop((playerFacingRight ? "jump" : "jump_h"));
+		if (player.paused) player.gotoAndStop((this.facingRight ? "jump" : "jump_h"));
     } else {
-    	player.gotoAndStop((playerFacingRight ? "walk" : "walk_h"));
+    	player.gotoAndStop((this.facingRight ? "walk" : "walk_h"));
     }
 }

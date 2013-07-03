@@ -19,7 +19,7 @@ function Level() {
 	this.player.x = this.player.width;
 	this.player.y = 0;
 	
-	this.gravity = 150;
+	this.gravity = 300;
 }
 
 Level.prototype = new createjs.Container();
