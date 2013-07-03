@@ -44,6 +44,7 @@ Level.prototype.tick = function tick(delta) {
 		if (obj.y + obj.height > this.height) {
 			obj.y = this.height - obj.height;
 			obj.vY = 0;
+			if (obj.collideGround) obj.collideGround();
 		} 
 		
 		if (obj.x < 0) obj.x = 0;

@@ -29,22 +29,37 @@ Player.prototype.initialize = function (playerSpriteSheet) {
 	this.jumpVel = -300;
 	this.moveSpeed = 100;
 	this.facingRight = true;
+	
+	this.isJumping = true;
+	
+	this.gotoAndStop((this.facingRight ? "walk" : "walk_h"));
 }
 
 Player.prototype.update = function (delta) {
-	if (jumpDown && this.paused) this.vY = this.jumpVel;
+	if (jumpDown && this.canJump()) {
+		this.vY = this.jumpVel;
+		this.isJumping = true;
+	}
+	
+	if (this.isJumping) this.gotoAndStop((this.facingRight ? "jump" : "jump_h"));
 	
 	if (leftDown && !rightDown) {
     	this.facingRight = false;
-    	player.x -= this.moveSpeed * delta;
-    	if (player.paused) player.gotoAndPlay("walk_h");
+    	this.x -= this.moveSpeed * delta;
+    	if ((this.paused || this.currentAnimation != "walk_h") && !this.isJumping) this.gotoAndPlay("walk_h");
     } else if (rightDown && !leftDown) {
     	this.facingRight = true;
-    	player.x += this.moveSpeed * delta;
-    	if (player.paused) player.gotoAndPlay("walk");
-	} else if (jumpDown) {
-		if (player.paused) player.gotoAndStop((this.facingRight ? "jump" : "jump_h"));
-    } else {
-    	player.gotoAndStop((this.facingRight ? "walk" : "walk_h"));
+    	this.x += this.moveSpeed * delta;
+    	if ((this.paused || this.currentAnimation != "walk") && !this.isJumping) this.gotoAndPlay("walk");
+	} else {
+    	if (!this.isJumping) this.gotoAndStop((this.facingRight ? "walk" : "walk_h"));
     }
+}
+
+Player.prototype.collideGround = function() {
+	this.isJumping = false;
+}
+
+Player.prototype.canJump = function() {
+	return !this.isJumping;
 }
