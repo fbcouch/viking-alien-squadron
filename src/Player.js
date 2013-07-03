@@ -64,3 +64,11 @@ Player.prototype.collideGround = function() {
 Player.prototype.canJump = function() {
 	return !this.isJumping;
 }
+
+Player.prototype.resetStates = function() {
+	this.isJumping = false;
+	this.nogravity = false;
+	this.facingRight = true;
+	
+	this.gotoAndStop((this.facingRight ? "walk" : "walk_h"));
+}

@@ -47,6 +47,10 @@ Enemy.prototype.initialize = function (spriteSheet, type) {
 	
 	this.moveSpeed = 100;
 	
+	if (this.type === ENEMY_FLY) {
+		this.nogravity = true;
+	}
+	
 	this.gotoAndPlay((this.facingRight ? "move_h" : "move"));
 }
 
@@ -57,6 +61,10 @@ Enemy.prototype.update = function (delta) {
 			this.vX = this.moveSpeed * (this.facingRight ? 1 : -1);
 		break;
 		case ENEMY_FLY:
+			if (!this.moving) {
+				this.tweenMove();
+				this.moving = true;
+			}
 		break;
 	}
 	
@@ -77,4 +85,25 @@ Enemy.prototype.collideSide = function () {
 		default:
 			break;
 	}
+}
+
+Enemy.prototype.collideGround = function () {
+	switch (this.type) {
+		case ENEMY_FLY:
+			
+			break;
+		case ENEMY_SLIME:
+		default:
+			break;
+	}
+}
+
+Enemy.prototype.tweenMove = function () {
+	createjs.Tween.get(this).wait(500)
+		.to({y: this.y + ((this.goingDown ? 1 : -1) * BLOCK_SIZE * 4)}, 
+			(BLOCK_SIZE * 4) / this.moveSpeed * 1000, 
+			createjs.Ease.Linear)
+		.call(this.tweenMove);
+		
+	this.goingDown = !this.goingDown;
 }

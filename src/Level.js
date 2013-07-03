@@ -68,8 +68,7 @@ Level.prototype.initialize = function () {
 	this.player = new Player(preload);
 	this.addObject(this.player);
 	
-	this.player.x = this.player.width;
-	this.player.y = 0;
+	this.resetPlayer();
 	
 	for (var x = 0; x < this.width; x += BLOCK_SIZE) {
 		var testblock = new Block(preload.getResult("ground"));
@@ -90,6 +89,12 @@ Level.prototype.initialize = function () {
 	test.x = BLOCK_SIZE * 10;
 	test.y = this.height - BLOCK_SIZE * 3;
 	
+	// add a test enemy
+	var test = new Enemy(ENEMY_FLY);
+	this.addObject(test);
+	test.x = BLOCK_SIZE * 12;
+	test.y = this.height - BLOCK_SIZE * 3;
+	
 	// add a test coin
 	test = new Coin();
 	this.addObject(test);
@@ -104,11 +109,13 @@ Level.prototype.tick = function tick(delta) {
 		
 		if (obj.update) obj.update(delta);
 		
+		// gravity
 		if (!obj.nogravity) 
 			obj.vY += this.gravity * delta;
 		
 		if (obj.vY > TERMINAL_VEL) obj.vY = TERMINAL_VEL;
 		
+		// adjust Y position
 		obj.y += obj.vY * delta;
 		
 		if (obj.y + obj.height > this.height) {
@@ -117,7 +124,7 @@ Level.prototype.tick = function tick(delta) {
 			if (obj.collideGround) obj.collideGround();
 		} 
 		
-		if (obj instanceof Enemy) console.log(obj.vX);
+		// adjust X position
 		obj.x += obj.vX * delta;
 		
 		if (obj.x < 0) {
@@ -185,7 +192,7 @@ Level.prototype.tick = function tick(delta) {
 					if (Math.abs(dy) <= Math.abs(dx) || (dy < 0 && dy > -5)) {
 						move.y += dy;
 						
-						move.vY = 0;
+						if (dy < 0) move.vY = 0;
 						
 						if (move.collideGround) move.collideGround();
 					} else {
@@ -204,8 +211,7 @@ Level.prototype.tick = function tick(delta) {
 	// remove things that need removing
 	for (var i=0; i<this.objects.length; i++) {
 		if (this.objects[i].isRemove) {
-			this.objlayer.removeChild(this.objects[i]);
-			this.objects.splice(i, 1);
+			this.removeObject(this.objects[i]);
 			i--;
 		}
 	}
@@ -237,4 +243,15 @@ Level.prototype.addObject = function addObject(obj) {
 	if (this.objlayer) this.objlayer.addChild(obj);
 	if (!obj.vX) obj.vX = 0;
 	if (!obj.vY) obj.vY = 0;
+}
+
+Level.prototype.removeObject = function removeObject(obj) {
+	this.objlayer.removeChild(obj);
+	this.objects.splice(this.objects.indexOf(obj), 1);
+}
+
+Level.prototype.resetPlayer = function resetPlayer() {
+	this.player.resetStates();
+	this.player.x = this.player.width;
+	this.player.y = 0;
 }
