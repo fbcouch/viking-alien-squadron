@@ -4,6 +4,7 @@
 // Level extends Container and contains all the state information necessary to render the level
 
 var BLOCK_SIZE = 70;
+var TERMINAL_VEL = 500;
 
 // Constructor
 function Level() {
@@ -84,6 +85,11 @@ Level.prototype.initialize = function () {
 	for (var i=0; i < this.layers.length; i++) {
 		this.addChild(this.layers[i]);
 	}
+	
+	// add a test enemy
+	var test = new Enemy(ENEMY_SLIME);
+	this.objlayer.addChild(test);
+	this.addObject(test);
 }
 
 Level.prototype.tick = function tick(delta) {
@@ -94,10 +100,10 @@ Level.prototype.tick = function tick(delta) {
 		if (obj.update) obj.update(delta);
 		
 		obj.vY += this.gravity * delta;
-		
+		if (obj.vY > TERMINAL_VEL) obj.vY = TERMINAL_VEL;
 		obj.y += obj.vY * delta;
 		
-		// TODO fix this
+		
 		if (obj.y + obj.height > this.height) {
 			obj.y = this.height - obj.height;
 			obj.vY = 0;
@@ -113,12 +119,23 @@ Level.prototype.tick = function tick(delta) {
 		}
 		for (var j=i+1; j<this.objects.length; j++) {
 			var other = this.objects[j];
-			
+			console.log("collide test");
 			if (this.collideRect(obj, other)) {
 				var move, nomove;
 				if (obj === this.player) { 
 					move = obj;
 					nomove = other;
+				} else if (other === this.player) {
+					move = other;
+					nomove = obj;
+				} else if (obj instanceof Block && !(other instanceof Block)) {
+					move = other;
+					nomove = obj;
+					console.log("collide1");
+				} else if (other instanceof Block && !(obj instanceof Block)) {
+					move = obj;
+					nomove = other;
+					console.log("collide2");
 				}
 				
 				if (move && nomove) {
@@ -136,10 +153,14 @@ Level.prototype.tick = function tick(delta) {
 					dy = dy_top;
 					if (Math.abs(dy_top) > Math.abs(dy_bot)) dy = dy_bot;
 					
-					if (Math.abs(dy) <= Math.abs(dx) || Math.abs(dy < 5)) {
+					if (Math.abs(dy) <= Math.abs(dx) || (dy < 0 && dy > -5)) {
 						move.y += dy;
+						console.log("dy: " + (dx).toString());
+						move.vY = 0;
+						
 						if (move.collideGround) move.collideGround();
 					} else {
+						console.log("dx");
 						move.x += dx;
 					}
 				}

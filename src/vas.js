@@ -1,3 +1,7 @@
+// Viking Alien Squadron
+// (c) 2013 Jami Couch
+// Source is released under Apache license.
+
 var KEYCODE_ENTER = 13;		//useful keycode
 var KEYCODE_SPACE = 32;		//useful keycode
 var KEYCODE_UP = 38;		//useful keycode
@@ -75,13 +79,8 @@ function init() {
     	{id: "shroom", src: "assets/shroom.png"},
     	{id: "spikes", src: "assets/spikes.png"},
     	{id: "water", src: "assets/water.png"},
-    	{id: "fly", src: "assets/enemies/fly_normal.png"},
-    	{id: "fly-move", src: "assets/enemies/fly_fly.png"},
-    	{id: "fly-dead", src: "assets/enemies/fly_dead.png"},
-    	{id: "slime", src: "assets/enemies/slime_normal.png"},
-    	{id: "slime-move", src: "assets/enemies/slime_walk.png"},
-    	{id: "slime-dead", src: "assets/enemies/slime_dead.png"},
-    	
+    	{id: "fly", src: "assets/enemies/fly.png"},
+    	{id: "slime", src: "assets/enemies/slime.png"},
     ];
     
     preload = new createjs.LoadQueue();
