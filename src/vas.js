@@ -102,6 +102,8 @@ function tick(event) {
     if (currentLevel.x > 0) currentLevel.x = 0;
     if (currentLevel.x < -1 * (currentLevel.width - canvasWidth)) currentLevel.x = -1 * (currentLevel.width - canvasWidth);
     
+    if (currentLevel.completed) restart();
+    
     stage.update();
 }
 

@@ -17,36 +17,33 @@ Level.prototype.Container_initialize = Level.prototype.initialize;
 Level.prototype.initialize = function () {
 	this.Container_initialize();
 	
+	this.completed = false;
+	
 	this.layers = new Array();
 	this.objects = new Array();
 	
 	this.width = BLOCK_SIZE * 20;
 	this.height = BLOCK_SIZE * 10;
 	
+	this.gravity = 1000;
+	
 	// generate background
 	var background = new createjs.Container();
-	background.width = this.width * 0.9;
+	background.width = this.width;
 	background.height = this.height;
 	this.layers.push(background);
 	
 	var y = background.height - BLOCK_SIZE * 0.8;
 	var img;
 	for (var x = 70 * Math.random() * 5; x < this.width; x += 70 + 70 * Math.random() * 5) {
-		img = new createjs.Bitmap(preload.getResult("hill-long"));
-		background.addChild(img);
-		img.x = x;
-		img.y = y - img.image.height;
-	}
-	
-	for (var x = 70 * Math.random() * 5; x < this.width; x += 70 + 70 * Math.random() * 5) {
-		img = new createjs.Bitmap(preload.getResult("hill-short"));
+		img = new createjs.Bitmap(preload.getResult((Math.random() > 0.5 ? "hill-short" : "hill-long")));
 		background.addChild(img);
 		img.x = x;
 		img.y = y - img.image.height;
 	}
 	
 	background = new createjs.Container();
-	background.width = this.width * 0.7;
+	background.width = this.width * 0.8;
 	background.height = this.height;
 	this.layers.push(background);
 	
@@ -70,8 +67,6 @@ Level.prototype.initialize = function () {
 	
 	this.player.x = this.player.width;
 	this.player.y = 0;
-	
-	this.gravity = 300;
 	
 	for (var x = 0; x < this.width; x += BLOCK_SIZE) {
 		var testblock = new Block(preload.getResult("ground"));
@@ -107,8 +102,12 @@ Level.prototype.tick = function tick(delta) {
 		} 
 		
 		if (obj.x < 0) obj.x = 0;
-		if (obj.x + obj.width > this.width) obj.x = this.width - obj.width;
-		
+		if (obj.x + obj.width > this.width) {
+			if (obj == this.player) {
+				if (obj.x + obj.width * 0.5 > this.width)
+					this.completed = true;
+			} else obj.x = this.width - obj.width;
+		}
 		for (var j=i+1; j<this.objects.length; j++) {
 			var other = this.objects[j];
 			
