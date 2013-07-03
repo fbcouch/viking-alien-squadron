@@ -29,6 +29,15 @@ Level.prototype.initialize = function () {
 	background.height = this.height;
 	this.layers.push(background);
 	
+	var y = this.height - BLOCK_SIZE;
+	var img;
+	for (var x = 0; x < this.width; x += 70 * Math.random() * 5) {
+		img = new createjs.Bitmap(preload.getResult("hill-long"));
+		background.addChild(img);
+		img.x = x;
+		img.y = y;
+	}
+	
 	// object layer
 	this.objlayer = new createjs.Container();
 	this.objlayer.width = this.width;
