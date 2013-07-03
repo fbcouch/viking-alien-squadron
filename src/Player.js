@@ -11,6 +11,8 @@ function Player(preload) {
 	});
 	createjs.SpriteSheetUtils.addFlippedFrames(playerSpriteSheet, true, false, false);
 	
+	this.jumpVel = -300;
+	
 	this.initialize(playerSpriteSheet);
 }
 
@@ -23,4 +25,8 @@ Player.prototype.initialize = function (playerSpriteSheet) {
 	
 	this.width = this.spriteSheet.getFrame(0).rect.width;
 	this.height = this.spriteSheet.getFrame(0).rect.height;
+}
+
+Player.prototype.update = function (delta) {
+	if (jumpDown && this.paused) this.vY = this.jumpVel;
 }

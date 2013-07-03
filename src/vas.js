@@ -72,6 +72,8 @@ function tick(event) {
 	
     //console.log("tick: " + delta);
     
+    currentLevel.tick(delta);
+    
     if (leftDown && !rightDown) {
     	playerFacingRight = false;
     	player.x -= playerMoveSpeed * delta;
@@ -86,7 +88,10 @@ function tick(event) {
     	player.gotoAndStop((playerFacingRight ? "walk" : "walk_h"));
     }
     
-    if (player.x > canvasWidth) { player.x = -100; }
+    currentLevel.x = - player.x + canvasWidth * 0.5;
+    // clamp view to level bounds
+    if (currentLevel.x > 0) currentLevel.x = 0;
+    if (currentLevel.x < -1 * (currentLevel.width - canvasWidth)) currentLevel.x = -1 * (currentLevel.width - canvasWidth);
     
     stage.update();
 }
@@ -97,9 +102,6 @@ function restart() {
 	
 	player = currentLevel.player;
 	
-	player.x = (canvasWidth / 2);
-	player.y = (canvasHeight - player.height);
-    
 	stage.removeAllChildren();
 	scoreField.text = (0).toString();
 	stage.addChild(scoreField);
