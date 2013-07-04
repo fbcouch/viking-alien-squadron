@@ -22,6 +22,7 @@ Level.prototype.initialize = function () {
 	
 	this.layers = new Array();
 	this.objects = new Array();
+	this.statics = new Array();
 	
 	this.width = BLOCK_SIZE * 20;
 	this.height = BLOCK_SIZE * 10;
@@ -89,7 +90,7 @@ Level.prototype.initialize = function () {
 		testblock.x = x;
 		testblock.y = this.height - testblock.height;
 		
-		this.addObject(testblock);
+		this.addStatic(testblock);
 	}
 	
 	for (var i=0; i < this.layers.length; i++) {
@@ -205,40 +206,7 @@ Level.prototype.tick = function tick(delta) {
 					
 				}
 				
-				if (move && nomove) {
-					// figure out which way to move these guys
-					var dx, dy;
-					
-					var dx_left = nomove.x - (move.x + move.width);
-					var dx_right = (nomove.x + nomove.width) - move.x;
-					
-					dx = dx_left;
-					if (Math.abs(dx_left) > Math.abs(dx_right)) dx = dx_right;
-					
-					var dy_top = nomove.y - (move.y + move.height);
-					var dy_bot = (nomove.y + nomove.height) - move.y;
-					dy = dy_top;
-					if (Math.abs(dy_top) > Math.abs(dy_bot)) dy = dy_bot;
-					
-					if (Math.abs(dy) <= Math.abs(dx) || (dy < 0 && dy > -5)) {
-						move.y += dy;
-						
-						if (dy < 0 && move.vY > 0) {
-							move.vY = 0;
-						
-							if (move.collideGround) move.collideGround();
-						}
-						
-						if (dy > 0 && move.vY < 0) move.vY = 0;
-					} else {
-						move.x += dx;
-						
-						move.vX = 0;
-						
-						if (move.collideSide) move.collideSide();
-						if (nomove.collideSide) nomove.collideSide();
-					}
-				}
+				this.doCollide(move, nomove);
 			} 
 		}
 	}
@@ -248,6 +216,32 @@ Level.prototype.tick = function tick(delta) {
 		if (this.objects[i].isRemove) {
 			this.removeObject(this.objects[i]);
 			i--;
+		}
+	}
+	
+	// collide with statics
+	for (var i = 0; i < this.objects.length; i++) {
+		var obj = this.objects[i];
+		if (obj.isDead) continue;
+		for (var j = 0; j < this.statics.length; j++) {
+			var static = this.statics[j];
+			
+			if (this.collideRect(obj, static)) {
+				if (obj.canCollide && !obj.canCollide(static)) continue;
+				
+				var obj_result = obj.collide && !obj.collide(static);
+				var static_result = static.collide && !static.collide(obj);
+				if (obj_result || other_result) continue;
+				
+				this.doCollide(obj, static);
+			}
+		}
+	}
+	
+	for (var j=0; j<this.statics.length; j++) {
+		if (this.statics[j].isRemove) {
+			this.removeStatic(this.statics[j]);
+			j--;
 		}
 	}
 	
@@ -264,6 +258,43 @@ Level.prototype.tick = function tick(delta) {
 	// update level score
 	if (this.player.x + this.player.width * 0.5 > this.maxprogress) this.maxprogress = this.player.x + this.player.width;
 	this.levelScore = this.maxprogress;
+}
+
+Level.prototype.doCollide = function (move, nomove) {
+	if (move && nomove) {
+		// figure out which way to move these guys
+		var dx, dy;
+		
+		var dx_left = nomove.x - (move.x + move.width);
+		var dx_right = (nomove.x + nomove.width) - move.x;
+		
+		dx = dx_left;
+		if (Math.abs(dx_left) > Math.abs(dx_right)) dx = dx_right;
+		
+		var dy_top = nomove.y - (move.y + move.height);
+		var dy_bot = (nomove.y + nomove.height) - move.y;
+		dy = dy_top;
+		if (Math.abs(dy_top) > Math.abs(dy_bot)) dy = dy_bot;
+		
+		if (Math.abs(dy) <= Math.abs(dx) || (dy < 0 && dy > -5)) {
+			move.y += dy;
+			
+			if (dy < 0 && move.vY > 0) {
+				move.vY = 0;
+			
+				if (move.collideGround) move.collideGround();
+			}
+			
+			if (dy > 0 && move.vY < 0) move.vY = 0;
+		} else {
+			move.x += dx;
+			
+			move.vX = 0;
+			
+			if (move.collideSide) move.collideSide();
+			if (nomove.collideSide) nomove.collideSide();
+		}
+	}
 }
 
 Level.prototype.collideRect = function (obj1, obj2) {
@@ -283,6 +314,16 @@ Level.prototype.addObject = function addObject(obj) {
 Level.prototype.removeObject = function removeObject(obj) {
 	this.objlayer.removeChild(obj);
 	this.objects.splice(this.objects.indexOf(obj), 1);
+}
+
+Level.prototype.addStatic = function (obj) {
+	this.statics.push(obj);
+	if (this.objlayer) this.objlayer.addChild(obj);
+}
+
+Level.prototype.removeStatic = function (obj) {
+	this.objlayer.removeChild(obj);
+	this.statics.splice(this.statics.indexOf(obj), 1);
 }
 
 Level.prototype.resetPlayer = function resetPlayer() {

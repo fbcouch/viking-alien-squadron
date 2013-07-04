@@ -88,5 +88,6 @@ Player.prototype.resetStates = function() {
 	this.nogravity = false;
 	this.facingRight = true;
 	this.isDead = false;
+	this.vX = this.vY = 0;
 	this.gotoAndStop((this.facingRight ? "walk" : "walk_h"));
 }

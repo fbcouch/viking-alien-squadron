@@ -125,7 +125,7 @@ Enemy.prototype.collide = function (other) {
 			other.jump();
 			
 			} else {
-				return true;
+				other.bop((dx >= 0));
 			}
 		} else {
 			// left/right -- bop the player
