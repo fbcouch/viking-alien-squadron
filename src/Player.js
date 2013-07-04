@@ -26,7 +26,7 @@ Player.prototype.initialize = function (playerSpriteSheet) {
 	this.regX = -36;
 	this.regY = 0;
 	
-	this.jumpVel = -650;
+	this.jumpVel = -675;
 	this.moveSpeed = 250;
 	this.facingRight = true;
 	
@@ -68,7 +68,7 @@ Player.prototype.collideGround = function() {
 }
 
 Player.prototype.canJump = function() {
-	return !this.isJumping;
+	return !this.isJumping && this.vY == 0;
 }
 
 Player.prototype.jump = function() {
@@ -79,8 +79,8 @@ Player.prototype.jump = function() {
 Player.prototype.bop = function(right) {
 	this.isBopped = true;
 	this.isJumping = true;
-	this.vY = -200;
-	this.vX = 200 * (right ? 1 : -1);
+	this.vY = -250;
+	this.vX = 350 * (right ? 1 : -1);
 	this.facingRight = right;
 }
 

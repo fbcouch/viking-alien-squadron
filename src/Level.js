@@ -324,14 +324,14 @@ Level.prototype.doCollide = function (move, nomove) {
 		// figure out which way to move these guys
 		var dx, dy;
 		
-		var dx_left = nomove.x - (move.x + move.width);
-		var dx_right = (nomove.x + nomove.width) - move.x;
+		var dx_left = nomove.x + nomove.collideRect.x - (move.x + move.collideRect.x + move.collideRect.width);
+		var dx_right = (nomove.x + nomove.collideRect.x + nomove.collideRect.width) - (move.x + move.collideRect.x);
 		
 		dx = dx_left;
 		if (Math.abs(dx_left) > Math.abs(dx_right)) dx = dx_right;
 		
-		var dy_top = nomove.y - (move.y + move.height);
-		var dy_bot = (nomove.y + nomove.height) - move.y;
+		var dy_top = nomove.y + nomove.collideRect.y - (move.y + move.collideRect.y + move.collideRect.height);
+		var dy_bot = (nomove.y + nomove.collideRect.y + nomove.collideRect.height) - (move.y + move.collideRect.y);
 		dy = dy_top;
 		if (Math.abs(dy_top) > Math.abs(dy_bot)) dy = dy_bot;
 		

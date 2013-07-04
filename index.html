@@ -11,10 +11,30 @@
     <script src="src/Level.js"></script>
     <script src="src/vas.js"></script>
     <link rel="icon" type="image/png" href="icon-64x64.png" />
+    
+    <!-- simonwhitaker's github fork ribbon -->
+    <link rel="stylesheet" href="css/gh-fork-ribbon.css" />
+    <!--[if IE]>
+        <link rel="stylesheet" href="css/gh-fork-ribbon.ie.css" />
+    <![endif]-->
+    
+    <style>
+	    .github-fork-ribbon {
+	    	background-color: #93f;
+	    }
+    </style>
+    
 </head>
-<body onLoad="init();" bgcolor="#000">
-    <center><canvas id="gameCanvas" width="1050" height="690">
+<body onLoad="init();" bgcolor="#000" color="#ccc">
+	
+	<div class="github-fork-ribbon-wrapper left">
+        <div class="github-fork-ribbon">
+            <a href="https://github.com/fbcouch/viking-alien-squadron">Fork me on GitHub</a>
+        </div>
+    </div>
+    
+    <div style="text-align: center"><canvas id="gameCanvas" width="1050" height="690">
         Viking Alien Squadron requires an HTML5-enabled browser.
-    </canvas></center>
+    </canvas></div>
 </body>
 </html>
