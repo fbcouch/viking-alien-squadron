@@ -98,6 +98,27 @@ Enemy.prototype.collideGround = function () {
 	}
 }
 
+Enemy.prototype.canCollide = function(other) {
+	return !this.isDead;
+}
+
+Enemy.prototype.collide = function (other) {
+	if (other instanceof Player) {
+		if (other.y + other.height < this.y + this.height * 0.1) {
+			// above -- bop
+			this.isDead = true;
+			this.nogravity = false;
+			this.vY = -200;
+			other.jump();
+		} else {
+			// left/right -- bop the player
+			//other.bop()
+		}
+	}
+	
+	return true;
+}
+
 Enemy.prototype.tweenMove = function () {
 	createjs.Tween.get(this).wait(500)
 		.to({y: this.y + ((this.goingDown ? 1 : -1) * BLOCK_SIZE * 4)}, 

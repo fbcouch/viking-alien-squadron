@@ -38,8 +38,7 @@ Player.prototype.initialize = function (playerSpriteSheet) {
 
 Player.prototype.update = function (delta) {
 	if (jumpDown && this.canJump()) {
-		this.vY = this.jumpVel;
-		this.isJumping = true;
+		this.jump();
 	}
 	
 	if (this.isJumping) this.gotoAndStop((this.facingRight ? "jump" : "jump_h"));
@@ -65,8 +64,13 @@ Player.prototype.canJump = function() {
 	return !this.isJumping;
 }
 
+Player.prototype.jump = function() {
+	this.vY = this.jumpVel;
+	this.isJumping = true;
+}
+
 Player.prototype.resetStates = function() {
-	this.isJumping = false;
+	this.isJumping = true;
 	this.nogravity = false;
 	this.facingRight = true;
 	

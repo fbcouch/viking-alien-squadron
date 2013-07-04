@@ -191,10 +191,14 @@ Level.prototype.tick = function tick(delta) {
 					
 					if (Math.abs(dy) <= Math.abs(dx) || (dy < 0 && dy > -5)) {
 						move.y += dy;
+						if (nomove instanceof Enemy) console.log(dy);
+						if (dy < 0 && move.vY > 0) {
+							move.vY = 0;
 						
-						if (dy < 0) move.vY = 0;
+							if (move.collideGround) move.collideGround();
+						}
 						
-						if (move.collideGround) move.collideGround();
+						if (dy > 0 && move.vY < 0) move.vY = 0;
 					} else {
 						move.x += dx;
 						
