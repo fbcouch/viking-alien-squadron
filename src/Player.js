@@ -34,6 +34,8 @@ Player.prototype.initialize = function (playerSpriteSheet) {
 	this.isBopped = false;
 	this.coins = 0;
 	
+	this.collideRect = {x: 14, y: 0, width: 44, height: this.height};
+	
 	this.gotoAndStop((this.facingRight ? "walk" : "walk_h"));
 }
 

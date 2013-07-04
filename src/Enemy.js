@@ -4,6 +4,11 @@
 var ENEMY_SLIME = 0;
 var ENEMY_FLY = 1;
 
+var COLLIDERECTS = [
+	{x: 5, y: 0, width: 42, height: 28},
+	{x: 15, y: 0, width: 36, height: 32},
+];
+
 // constructor
 function Enemy(type) {
 	var normal, moving, dead;
@@ -53,6 +58,14 @@ Enemy.prototype.initialize = function (spriteSheet, type) {
 		this.pausetimer = 0;
 		this.movetimer = 0;
 		this.goingDown = true;
+	}
+	
+	this.collideRect = {x: 0, y: 0, width: this.width, height: this.height};
+	if (type < COLLIDERECTS.length) {
+		this.collideRect.x = COLLIDERECTS[type].x;
+		this.collideRect.y = COLLIDERECTS[type].y;
+		this.collideRect.width = COLLIDERECTS[type].width;
+		this.collideRect.height = COLLIDERECTS[type].height;
 	}
 	
 	this.gotoAndPlay((this.facingRight ? "move_h" : "move"));

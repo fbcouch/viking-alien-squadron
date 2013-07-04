@@ -17,4 +17,6 @@ Block.prototype.initialize = function (image) {
 	this.width = this.image.width;
 	
 	this.nogravity = true;
+	
+	this.collideRect = {x: 0, y: 0, width: this.width, height: this.height};
 }

@@ -298,10 +298,14 @@ Level.prototype.doCollide = function (move, nomove) {
 }
 
 Level.prototype.collideRect = function (obj1, obj2) {
-	return !(obj1.x + obj1.width < obj2.x ||
-			 obj1.x > obj2.x + obj2.width ||
-			 obj1.y + obj1.height < obj2.y ||
-			 obj1.y > obj2.y + obj2.height);
+	if (!obj1.collideRect)
+		obj1.collideRect = {x: 0, y: 0, width: obj1.width, height: obj1.height};
+	if (!obj2.collideRect)
+		obj2.collideRect = {x: 0, y: 0, width: obj2.width, height: obj2.height};
+	return !(obj1.x + obj1.collideRect.x + obj1.collideRect.width < obj2.x + obj2.collideRect.x ||
+			 obj1.x + obj1.collideRect.x > obj2.x + obj2.collideRect.x + obj2.collideRect.width ||
+			 obj1.y + obj1.collideRect.y + obj1.collideRect.height < obj2.y + obj2.collideRect.y ||
+			 obj1.y + obj1.collideRect.y > obj2.y + obj2.collideRect.y + obj2.collideRect.height);
 }
 
 Level.prototype.addObject = function addObject(obj) {
