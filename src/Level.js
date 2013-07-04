@@ -7,16 +7,17 @@ var BLOCK_SIZE = 70;
 var TERMINAL_VEL = 500;
 
 // Constructor
-function Level() {
-	this.initialize();
+function Level(leveldef) {
+	this.initialize(leveldef);
 }
 
 Level.prototype = new createjs.Container();
 
 Level.prototype.Container_initialize = Level.prototype.initialize;
 
-Level.prototype.initialize = function () {
+Level.prototype.initialize = function (leveldef) {
 	this.Container_initialize();
+	this.leveldef = leveldef;
 	
 	this.completed = false;
 	
@@ -32,7 +33,21 @@ Level.prototype.initialize = function () {
 	this.levelScore = 0;
 	this.maxprogress = 0;
 	
+	this.createLevel();
+	
+	for (var i=0; i < this.layers.length; i++) {
+		this.addChild(this.layers[i]);
+	}
+}
+
+Level.prototype.createLevel = function () {
 	// generate background
+	
+	if (this.leveldef) {
+		this.width = this.leveldef.data[0].length * BLOCK_SIZE;
+		this.height = this.leveldef.data.length * BLOCK_SIZE;
+	}
+	
 	var background = new createjs.Container();
 	background.width = this.width;
 	background.height = this.height;
@@ -84,6 +99,54 @@ Level.prototype.initialize = function () {
 	
 	this.resetPlayer();
 	
+	if (this.leveldef) {
+		for (var y = 0; y < this.height / BLOCK_SIZE; y++) {
+			if (y >= this.leveldef.data.length) continue;
+			for (var x = 0; x < this.width / BLOCK_SIZE; x++) {
+				if (x >= this.leveldef.data[y].length) continue;
+				var obj = null;
+				switch (this.leveldef.data[y][x]) {
+					// statics
+					case "g":
+						obj = new Block(preload.getResult("ground"));
+						this.addStatic(obj);
+						break;
+					case "b":
+						obj = new Block(preload.getResult("block"));
+						this.addStatic(obj);
+						break;
+					case "r":
+						obj = new Block(preload.getResult("crate"));
+						this.addStatic(obj);
+						break;
+					// objects
+					case "c":
+						obj = new Coin();
+						this.addObject(obj);
+						break;
+					case "f":
+						obj = new Enemy(ENEMY_FLY);
+						this.addObject(obj);
+						break;
+					case "s":
+						obj = new Enemy(ENEMY_SLIME);
+						this.addObject(obj);
+						break;
+					case " ":
+					default:
+				}
+				if (obj) {
+					obj.x = x * BLOCK_SIZE + (BLOCK_SIZE - obj.width) / 2;
+					obj.y = y * BLOCK_SIZE;					
+				}
+			}
+		}
+	} else {
+		this.generateRandomLevel();
+	}
+}
+
+Level.prototype.generateRandomLevel = function () {
 	for (var x = 0; x < this.width; x += BLOCK_SIZE * (1 + parseInt(Math.random() * 3))) {
 		var testblock = new Block(preload.getResult("ground"));
 		
@@ -91,10 +154,6 @@ Level.prototype.initialize = function () {
 		testblock.y = this.height - testblock.height;
 		
 		this.addStatic(testblock);
-	}
-	
-	for (var i=0; i < this.layers.length; i++) {
-		this.addChild(this.layers[i]);
 	}
 	
 	// add a test enemy

@@ -26,7 +26,7 @@ Player.prototype.initialize = function (playerSpriteSheet) {
 	this.regX = -36;
 	this.regY = 0;
 	
-	this.jumpVel = -600;
+	this.jumpVel = -650;
 	this.moveSpeed = 200;
 	this.facingRight = true;
 	

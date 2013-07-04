@@ -22,6 +22,8 @@ var canvasHeight;
 var player;
 var currentLevel;
 var baseScore;
+var level = 0;
+var levelArray;
 
 // input
 var leftDown = false, rightDown = false, jumpDown = false;
@@ -30,7 +32,9 @@ var leftDown = false, rightDown = false, jumpDown = false;
 var messageField;
 var preload;
 
+// hud
 var scoreField;
+var levelField;
 
 // event handlers
 document.onkeydown = handleKeyDown;
@@ -104,24 +108,27 @@ function tick(event) {
     
     if (currentLevel.completed) {
     	var score = baseScore + currentLevel.levelScore;
+    	level = (level + 1) % levelArray.length;
     	restart();
     	baseScore = score;
     } 
     
-    scoreField.text = (parseInt(baseScore + currentLevel.levelScore)).toString();
+    scoreField.text = ("Score: " + parseInt(baseScore + currentLevel.levelScore)).toString();
+    levelField.text = ("Level: " + parseInt(level + 1).toString());
     
     stage.update();
 }
 
 function restart() {
 	baseScore = 0;
-	currentLevel = new Level();
+	currentLevel = new Level(levelArray[level]);
 	
 	player = currentLevel.player;
 	
 	stage.removeAllChildren();
 	scoreField.text = (0).toString();
 	stage.addChild(scoreField);
+	stage.addChild(levelField);
 	
 	jumpDown = leftDown = rightDown = false;
 	
@@ -202,7 +209,46 @@ function doneLoading() {
 	scoreField.y = 22;
 	scoreField.maxWidth = 1000;
 	
+	levelField = new createjs.Text("Level 0", "bold 30px sans-serif", "#FFFFFF");
+	levelField.x = 10;
+	levelField.y = 22;
+	
 	messageField.text = "Welcome: click to play";
 	
 	watchRestart();
 }
+
+// temporarily, I'm just storing these statically here until I figure out how to properly load json files from preloadjs
+levelArray = 
+[
+	{
+		id: "lvl1",
+		data: [
+			"                                                                                                             ",
+			"                                                 c c c                                               ccc     ",
+			"                                                                                                    c   c    ",
+			"     bbb                                         bbbbbb                                                      ",
+			"               c                                                                                   r         ",
+			"             c   c                                         f           c     c                    rr         ",
+			"    bbbbb                          c       bbbb          bbbb          c     c                   rrr         ",
+			"             r   r    b cc  b      f                                   c     c     bcccb        rrrr         ",
+			"             r   r    b    sb            rs     r                   f     f     f  b s b       rrrrr         ",
+			"gggggggggggggg   ggggggggggggggggg   gggggggggggg      gggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+		],
+	},
+	{
+		id: "lvl2",
+		data: [
+			"                             ",
+			"                             ",
+			"                             ",
+			"                             ",
+			"                             ",
+			"     c                       ",
+			"                             ",
+			"     b           f           ",
+			"            s                ",
+			"ggggggggggggggggggggggggggggg",
+		],
+	},
+];
