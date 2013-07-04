@@ -93,7 +93,7 @@ Level.prototype.initialize = function () {
 	var test = new Enemy(ENEMY_FLY);
 	this.addObject(test);
 	test.x = BLOCK_SIZE * 12;
-	test.y = this.height - BLOCK_SIZE * 3;
+	test.y = this.height - BLOCK_SIZE * 2;
 	
 	// add a test coin
 	test = new Coin();
@@ -118,11 +118,15 @@ Level.prototype.tick = function tick(delta) {
 		// adjust Y position
 		obj.y += obj.vY * delta;
 		
-		if (obj.y + obj.height > this.height) {
+		if (obj.y + obj.height > this.height && !obj.isDead) {
 			obj.y = this.height - obj.height;
 			obj.vY = 0;
 			if (obj.collideGround) obj.collideGround();
-		} 
+		} else if (obj.isDead && obj.y > this.height) {
+			obj.isRemove = true;
+		}
+		
+		if (obj.isDead) continue;
 		
 		// adjust X position
 		obj.x += obj.vX * delta;
@@ -191,7 +195,7 @@ Level.prototype.tick = function tick(delta) {
 					
 					if (Math.abs(dy) <= Math.abs(dx) || (dy < 0 && dy > -5)) {
 						move.y += dy;
-						if (nomove instanceof Enemy) console.log(dy);
+						
 						if (dy < 0 && move.vY > 0) {
 							move.vY = 0;
 						

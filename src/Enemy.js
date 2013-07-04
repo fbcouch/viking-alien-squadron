@@ -104,22 +104,43 @@ Enemy.prototype.canCollide = function(other) {
 
 Enemy.prototype.collide = function (other) {
 	if (other instanceof Player) {
-		if (other.y + other.height < this.y + this.height * 0.1) {
-			// above -- bop
-			this.isDead = true;
-			this.nogravity = false;
-			this.vY = -200;
+		var dy;
+		if (this.y + this.height * 0.5 > other.y + other.height * 0.5)
+			dy = (other.y + other.height) - this.y;
+		else
+			dy = other.y - (this.y + this.height);
+			
+		var dx;
+		if (this.x + this.width * 0.5 > other.x + other.width * 0.5) {
+			dx = this.x - (other.x + other.width);
+		} else {
+			dx = (this.x + this.width) - other.x;
+		}
+		
+		if (Math.abs(dy) < Math.abs(dx)) {
+			if (dy > 0 && other.vY > 0) {
+			// above -- bop?
+			this.die();
 			other.jump();
+			
+			} else {
+				return true;
+			}
 		} else {
 			// left/right -- bop the player
-			//other.bop()
+			if (dx < 0)
+				other.bop(false);
+			else
+				other.bop(true);
 		}
+		return false;
 	}
 	
 	return true;
 }
 
 Enemy.prototype.tweenMove = function () {
+	if (this.isDead) return;
 	createjs.Tween.get(this).wait(500)
 		.to({y: this.y + ((this.goingDown ? 1 : -1) * BLOCK_SIZE * 4)}, 
 			(BLOCK_SIZE * 4) / this.moveSpeed * 1000, 
@@ -127,4 +148,11 @@ Enemy.prototype.tweenMove = function () {
 		.call(this.tweenMove);
 		
 	this.goingDown = !this.goingDown;
+}
+
+Enemy.prototype.die = function () {
+	this.isDead = true;
+	this.nogravity = false;
+	this.vY = -200;
+	createjs.Tween.removeTweens(this);
 }

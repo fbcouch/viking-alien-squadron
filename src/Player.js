@@ -31,12 +31,15 @@ Player.prototype.initialize = function (playerSpriteSheet) {
 	this.facingRight = true;
 	
 	this.isJumping = true;
+	this.isBopped = false;
 	this.coins = 0;
 	
 	this.gotoAndStop((this.facingRight ? "walk" : "walk_h"));
 }
 
 Player.prototype.update = function (delta) {
+	if (this.isBopped) return;
+	
 	if (jumpDown && this.canJump()) {
 		this.jump();
 	}
@@ -58,6 +61,8 @@ Player.prototype.update = function (delta) {
 
 Player.prototype.collideGround = function() {
 	this.isJumping = false;
+	if (this.isBopped) this.vX = 0;
+	this.isBopped = false;
 }
 
 Player.prototype.canJump = function() {
@@ -69,8 +74,17 @@ Player.prototype.jump = function() {
 	this.isJumping = true;
 }
 
+Player.prototype.bop = function(right) {
+	this.isBopped = true;
+	this.isJumping = true;
+	this.vY = -200;
+	this.vX = 200 * (right ? 1 : -1);
+	this.facingRight = right;
+}
+
 Player.prototype.resetStates = function() {
 	this.isJumping = true;
+	this.isBopped = false;
 	this.nogravity = false;
 	this.facingRight = true;
 	
