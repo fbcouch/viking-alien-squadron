@@ -37,7 +37,7 @@ Level.prototype.initialize = function () {
 	background.height = this.height;
 	this.layers.push(background);
 	
-	var y = background.height - BLOCK_SIZE * 0.8;
+	var y = background.height - BLOCK_SIZE * 0.5;
 	var img;
 	for (var x = 70 * Math.random() * 5; x < this.width; x += 70 + 70 * Math.random() * 5) {
 		img = new createjs.Bitmap(preload.getResult((Math.random() > 0.5 ? "hill-short" : "hill-long")));
@@ -59,6 +59,19 @@ Level.prototype.initialize = function () {
 		img.y = y - img.image.height + Math.random() * BLOCK_SIZE;
 	}
 	
+	background = new createjs.Container();
+	background.width = this.width * 0.9;
+	background.height = this.height;
+	this.layers.push(background);
+	
+	var water = preload.getResult("water");
+	for (var x = 0; x < background.width; x += BLOCK_SIZE) {
+		img = new createjs.Bitmap(water);
+		background.addChild(img);
+		img.x = x;
+		img.y = this.height - water.height;
+	}
+	
 	// object layer
 	this.objlayer = new createjs.Container();
 	this.objlayer.width = this.width;
@@ -70,7 +83,7 @@ Level.prototype.initialize = function () {
 	
 	this.resetPlayer();
 	
-	for (var x = 0; x < this.width; x += BLOCK_SIZE) {
+	for (var x = 0; x < this.width; x += BLOCK_SIZE * (1 + parseInt(Math.random() * 3))) {
 		var testblock = new Block(preload.getResult("ground"));
 		
 		testblock.x = x;
@@ -100,6 +113,13 @@ Level.prototype.initialize = function () {
 	this.addObject(test);
 	test.x = BLOCK_SIZE * 8;
 	test.y = BLOCK_SIZE * 7;
+	
+	// add a test block
+	
+	test = new Block(preload.getResult("crate"));
+	this.addObject(test);
+	test.x = BLOCK_SIZE * 3;
+	test.y = BLOCK_SIZE * 7;
 }
 
 Level.prototype.tick = function tick(delta) {
@@ -119,11 +139,18 @@ Level.prototype.tick = function tick(delta) {
 		obj.y += obj.vY * delta;
 		
 		if (obj.y + obj.height > this.height && !obj.isDead) {
-			obj.y = this.height - obj.height;
-			obj.vY = 0;
-			if (obj.collideGround) obj.collideGround();
+			if (obj instanceof Player || obj instanceof Enemy) {
+				obj.isDead = true;
+			} else {
+				obj.y = this.height - obj.height;
+				obj.vY = 0;
+			}
+			//if (obj.collideGround) obj.collideGround();
+			
 		} else if (obj.isDead && obj.y > this.height) {
-			obj.isRemove = true;
+			if (obj instanceof Player)
+				this.resetPlayer();
+			else obj.isRemove = true;
 		}
 		
 		if (obj.isDead) continue;

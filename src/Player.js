@@ -26,7 +26,7 @@ Player.prototype.initialize = function (playerSpriteSheet) {
 	this.regX = -36;
 	this.regY = 0;
 	
-	this.jumpVel = -500;
+	this.jumpVel = -600;
 	this.moveSpeed = 200;
 	this.facingRight = true;
 	
@@ -87,6 +87,6 @@ Player.prototype.resetStates = function() {
 	this.isBopped = false;
 	this.nogravity = false;
 	this.facingRight = true;
-	
+	this.isDead = false;
 	this.gotoAndStop((this.facingRight ? "walk" : "walk_h"));
 }
