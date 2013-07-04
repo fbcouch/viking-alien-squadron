@@ -49,6 +49,10 @@ Enemy.prototype.initialize = function (spriteSheet, type) {
 	
 	if (this.type === ENEMY_FLY) {
 		this.nogravity = true;
+		this.pausetime = 500;
+		this.pausetimer = 0;
+		this.movetimer = 0;
+		this.goingDown = true;
 	}
 	
 	this.gotoAndPlay((this.facingRight ? "move_h" : "move"));
@@ -61,10 +65,7 @@ Enemy.prototype.update = function (delta) {
 			this.vX = this.moveSpeed * (this.facingRight ? 1 : -1);
 		break;
 		case ENEMY_FLY:
-			if (!this.moving) {
-				this.tweenMove();
-				this.moving = true;
-			}
+			this.tweenMove(delta);	
 		break;
 	}
 	
@@ -139,20 +140,32 @@ Enemy.prototype.collide = function (other) {
 	return true;
 }
 
-Enemy.prototype.tweenMove = function () {
+Enemy.prototype.tweenMove = function (delta) {
 	if (this.isDead) return;
-	createjs.Tween.get(this).wait(500)
-		.to({y: this.y + ((this.goingDown ? 1 : -1) * BLOCK_SIZE * 4)}, 
-			(BLOCK_SIZE * 4) / this.moveSpeed * 1000, 
-			createjs.Ease.Linear)
-		.call(this.tweenMove);
+	
+	this.pausetimer -= delta * 1000;
+	this.movetimer -= delta * 1000;
+	
+	if (this.pausetimer <= 0 && this.movetimer <= 0) {
+		this.movetimer = 3000;
+		this.pausetimer = 500;
+		this.goingDown = !this.goingDown;		
+	} else {
 		
-	this.goingDown = !this.goingDown;
+		this.vY = 0;
+	}
+	
+	if (this.movetimer <= 0) {
+		this.pausetimer = this.pausetime;
+	} else {
+		this.vY = this.moveSpeed * (this.goingDown ? 1 : -1);
+	}
+		
+	
 }
 
 Enemy.prototype.die = function () {
 	this.isDead = true;
 	this.nogravity = false;
 	this.vY = -200;
-	createjs.Tween.removeTweens(this);
 }
