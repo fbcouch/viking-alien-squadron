@@ -108,15 +108,15 @@ Level.prototype.createLevel = function () {
 				switch (this.leveldef.data[y][x]) {
 					// statics
 					case "g":
-						obj = new Block(preload.getResult("ground"));
+						obj = new VAS.Block(preload.getResult("ground"));
 						this.addStatic(obj);
 						break;
 					case "b":
-						obj = new Block(preload.getResult("block"));
+						obj = new VAS.Block(preload.getResult("block"));
 						this.addStatic(obj);
 						break;
 					case "r":
-						obj = new Block(preload.getResult("crate"));
+						obj = new VAS.Block(preload.getResult("crate"));
 						this.addStatic(obj);
 						break;
 					// objects
@@ -255,11 +255,11 @@ Level.prototype.tick = function tick(delta) {
 				} else if (other === this.player) {
 					move = other;
 					nomove = obj;
-				} else if (obj instanceof Block && !(other instanceof Block)) {
+				} else if (obj instanceof VAS.Block && !(other instanceof VAS.Block)) {
 					move = other;
 					nomove = obj;
 					
-				} else if (other instanceof Block && !(obj instanceof Block)) {
+				} else if (other instanceof VAS.Block && !(obj instanceof VAS.Block)) {
 					move = obj;
 					nomove = other;
 					
