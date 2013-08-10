@@ -85,11 +85,12 @@ init = () ->
       {id: "slime", src: "assets/enemies/slime.png"},
     ]
   
-  root.preload = new createjs.LoadQueue()
-  preload = root.preload
+  preload = new createjs.LoadQueue()
   preload.addEventListener 'complete', doneLoading
   preload.addEventListener 'progress', updateLoading
   preload.loadManifest manifest
+  
+  root.preload = preload
   
   document.onkeydown = handleKeyDown
   document.onkeyup = handleKeyUp

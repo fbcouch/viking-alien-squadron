@@ -22,7 +22,7 @@ Coin.prototype.initialize = function() {
 }
 
 Coin.prototype.collide = function (obj) {
-	if (obj instanceof Player) {
+	if (obj instanceof VAS.Player) {
 		this.isRemove = true;
 		obj.coins++;
 		return false;

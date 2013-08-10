@@ -94,7 +94,7 @@ Level.prototype.createLevel = function () {
 	this.objlayer.height = this.height;
 	this.layers.push(this.objlayer);
 	
-	this.player = new Player(preload);
+	this.player = new VAS.Player(window.preload);
 	this.addObject(this.player);
 	
 	this.resetPlayer();
@@ -199,7 +199,7 @@ Level.prototype.tick = function tick(delta) {
 		obj.y += obj.vY * delta;
 		
 		if (obj.y + obj.height > this.height && !obj.isDead) {
-			if (obj instanceof Player || obj instanceof Enemy) {
+			if (obj instanceof VAS.Player || obj instanceof Enemy) {
 				obj.isDead = true;
 			} else {
 				obj.y = this.height - obj.height;
@@ -208,7 +208,7 @@ Level.prototype.tick = function tick(delta) {
 			//if (obj.collideGround) obj.collideGround();
 			
 		} else if (obj.isDead && obj.y > this.height) {
-			if (obj instanceof Player)
+			if (obj instanceof VAS.Player)
 				this.resetPlayer();
 			else obj.isRemove = true;
 		}
@@ -390,6 +390,7 @@ Level.prototype.removeStatic = function (obj) {
 }
 
 Level.prototype.resetPlayer = function resetPlayer() {
+	console.log(this.player);
 	this.player.resetStates();
 	this.player.x = this.player.width;
 	this.player.y = 0;

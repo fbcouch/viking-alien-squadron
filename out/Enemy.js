@@ -117,7 +117,7 @@ Enemy.prototype.canCollide = function(other) {
 }
 
 Enemy.prototype.collide = function (other) {
-	if (other instanceof Player) {
+	if (other instanceof VAS.Player) {
 		var dy;
 		if (this.y + this.height * 0.5 > other.y + other.height * 0.5)
 			dy = (other.y + other.height) - this.y;
