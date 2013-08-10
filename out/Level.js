@@ -308,9 +308,9 @@ Level.prototype.tick = function tick(delta) {
 	for (var i=0; i<this.layers.length; i++) {
 		if (this.layers[i].width !== this.width) {
 			// parallax!
-			if (player.x < canvasWidth * 0.5) this.layers[i].x = 0;
-			else if (player.x > this.width - canvasWidth * 0.5) this.layers[i].x = this.width - this.layers[i].width;
-			else this.layers[i].x = (player.x - canvasWidth * 0.5) / (this.width - canvasWidth) * (this.width - this.layers[i].width);
+			if (this.player.x < window.canvasWidth * 0.5) this.layers[i].x = 0;
+			else if (this.player.x > this.width - window.canvasWidth * 0.5) this.layers[i].x = this.width - this.layers[i].width;
+			else this.layers[i].x = (this.player.x - window.canvasWidth * 0.5) / (this.width - window.canvasWidth) * (this.width - this.layers[i].width);
 		}
 	}
 	

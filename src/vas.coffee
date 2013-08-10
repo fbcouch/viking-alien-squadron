@@ -24,7 +24,10 @@ baseScore = {}
 level = 0
 levelArray = []
 
-leftDown = rightDown = jumpDown = false
+root.keystatus = keystatus = 
+  leftDown: false
+  rightDown: false
+  jumpDown: false
 
 messageField = {}
 preload = {}
@@ -42,8 +45,8 @@ init = () ->
   canvas.style.background = '#93F'
   stage = new createjs.Stage canvas
   
-  canvasWidth = canvas.width
-  canvasHeight = canvas.height
+  root.canvasWidth = canvasWidth = canvas.width
+  root.canvasHeight = canvasHeight = canvas.height
   
   messageField = new createjs.Text 'Loading', 'bold 30px sans-serif', '#FFF'
   messageField.maxWidth = 1000
@@ -88,10 +91,15 @@ init = () ->
   preload.addEventListener 'progress', updateLoading
   preload.loadManifest manifest
   
+  document.onkeydown = handleKeyDown
+  document.onkeyup = handleKeyUp
+  
 tick = (event) ->
   delta = event.delta / 1000
   if not event.delta?
     return
+  
+  console.log "FPS: #{1 / delta}"
   
   currentLevel.tick delta
   
@@ -143,18 +151,18 @@ watchRestart = () ->
 handleKeyDown = (e) ->
   e = window.event if not e
   switch e.keyCode
-    when KEYCODE_A, KEYCODE_LEFT then leftDown = true
-    when KEYCODE_D, KEYCODE_RIGHT then rightDown = true
-    when KEYCODE_SPACE, KEYCODE_W, KEYCODE_UP then jumpDown = true
+    when KEYCODE_A, KEYCODE_LEFT then keystatus.leftDown = true
+    when KEYCODE_D, KEYCODE_RIGHT then keystatus.rightDown = true
+    when KEYCODE_SPACE, KEYCODE_W, KEYCODE_UP then keystatus.jumpDown = true
     when KEYCODE_ENTER then handleClick() if canvas.onclick is handleClick
   false
   
 handleKeyUp = (e) ->
   e = window.event if not e
   switch e.keyCode
-    when KEYCODE_A, KEYCODE_LEFT then leftDown = false
-    when KEYCODE_D, KEYCODE_RIGHT then rightDown = false
-    when KEYCODE_SPACE, KEYCODE_W, KEYCODE_UP then jumpDown = false
+    when KEYCODE_A, KEYCODE_LEFT then keystatus.leftDown = false
+    when KEYCODE_D, KEYCODE_RIGHT then keystatus.rightDown = false
+    when KEYCODE_SPACE, KEYCODE_W, KEYCODE_UP then keystatus.jumpDown = false
     when KEYCODE_ENTER then handleClick() if canvas.onclick is handleClick
   false
 

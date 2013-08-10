@@ -1,4 +1,6 @@
 
+var keystatus = window.keystatus;
+
 // constructor
 function Player(preload) {
 	var playerSpriteSheet = new createjs.SpriteSheet({
@@ -42,17 +44,17 @@ Player.prototype.initialize = function (playerSpriteSheet) {
 Player.prototype.update = function (delta) {
 	if (this.isBopped) return;
 	
-	if (jumpDown && this.canJump()) {
+	if (keystatus.jumpDown && this.canJump()) {
 		this.jump();
 	}
 	
 	if (this.isJumping) this.gotoAndStop((this.facingRight ? "jump" : "jump_h"));
 	
-	if (leftDown && !rightDown) {
+	if (keystatus.leftDown && !keystatus.rightDown) {
     	this.facingRight = false;
     	this.x -= this.moveSpeed * delta;
     	if ((this.paused || this.currentAnimation != "walk_h") && !this.isJumping) this.gotoAndPlay("walk_h");
-    } else if (rightDown && !leftDown) {
+    } else if (keystatus.rightDown && !keystatus.leftDown) {
     	this.facingRight = true;
     	this.x += this.moveSpeed * delta;
     	if ((this.paused || this.currentAnimation != "walk") && !this.isJumping) this.gotoAndPlay("walk");
