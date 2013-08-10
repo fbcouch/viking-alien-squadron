@@ -3,13 +3,13 @@
 <head>
     <title>Viking Alien Squadron</title>
     <script src="http://code.createjs.com/createjs-2013.05.14.min.js"></script>
-    <script src="src/json2.js"></script>
-    <script src="src/Player.js"></script>
-    <script src="src/Block.js"></script>
-    <script src="src/Enemy.js"></script>
-    <script src="src/Coin.js"></script>
-    <script src="src/Level.js"></script>
-    <script src="src/vas.js"></script>
+    <script src="out/json2.js"></script>
+    <script src="out/Player.js"></script>
+    <script src="out/Block.js"></script>
+    <script src="out/Enemy.js"></script>
+    <script src="out/Coin.js"></script>
+    <script src="out/Level.js"></script>
+    
     <link rel="icon" type="image/png" href="icon-64x64.png" />
     
     <!-- simonwhitaker's github fork ribbon -->
@@ -25,7 +25,7 @@
     </style>
     
 </head>
-<body onLoad="init();" bgcolor="#000" color="#ccc">
+<body bgcolor="#000" color="#ccc">
 	
 	<div class="github-fork-ribbon-wrapper left">
         <div class="github-fork-ribbon">
@@ -36,5 +36,6 @@
     <div style="text-align: center"><canvas id="gameCanvas" width="1050" height="690">
         Viking Alien Squadron requires an HTML5-enabled browser.
     </canvas></div>
+    <script src="out/vas.js"></script>
 </body>
 </html>
