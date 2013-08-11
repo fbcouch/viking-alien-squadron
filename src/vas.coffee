@@ -121,7 +121,7 @@ tick = (event) ->
 
 restart = () ->
   baseScore = 0
-  currentLevel = new Level levelArray[level]
+  currentLevel = new VAS.Level levelArray[level]
   
   player = currentLevel.player
   
