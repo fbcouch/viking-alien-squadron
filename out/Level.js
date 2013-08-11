@@ -121,7 +121,7 @@ Level.prototype.createLevel = function () {
 						break;
 					// objects
 					case "c":
-						obj = new Coin();
+						obj = new VAS.Coin();
 						this.addObject(obj);
 						break;
 					case "f":
