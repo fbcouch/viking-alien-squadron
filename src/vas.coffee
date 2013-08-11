@@ -100,7 +100,7 @@ tick = (event) ->
   if not event.delta?
     return
   
-  console.log "FPS: #{1 / delta}"
+  #console.log "FPS: #{1 / delta}"
   
   currentLevel.tick delta
   

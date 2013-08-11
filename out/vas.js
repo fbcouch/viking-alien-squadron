@@ -162,7 +162,6 @@
     if (event.delta == null) {
       return;
     }
-    console.log("FPS: " + (1 / delta));
     currentLevel.tick(delta);
     currentLevel.x = -1 * player.x + canvasWidth * 0.5;
     if (currentLevel.x > 0) {

@@ -125,11 +125,11 @@ Level.prototype.createLevel = function () {
 						this.addObject(obj);
 						break;
 					case "f":
-						obj = new Enemy(ENEMY_FLY);
+						obj = new VAS.Enemy(VAS.Enemy.ENEMY_FLY);
 						this.addObject(obj);
 						break;
 					case "s":
-						obj = new Enemy(ENEMY_SLIME);
+						obj = new VAS.Enemy(VAS.Enemy.ENEMY_SLIME);
 						this.addObject(obj);
 						break;
 					case " ":
@@ -199,7 +199,7 @@ Level.prototype.tick = function tick(delta) {
 		obj.y += obj.vY * delta;
 		
 		if (obj.y + obj.height > this.height && !obj.isDead) {
-			if (obj instanceof VAS.Player || obj instanceof Enemy) {
+			if (obj instanceof VAS.Player || obj instanceof VAS.Enemy) {
 				obj.isDead = true;
 			} else {
 				obj.y = this.height - obj.height;
@@ -390,7 +390,6 @@ Level.prototype.removeStatic = function (obj) {
 }
 
 Level.prototype.resetPlayer = function resetPlayer() {
-	console.log(this.player);
 	this.player.resetStates();
 	this.player.x = this.player.width;
 	this.player.y = 0;
